@@ -1,5 +1,7 @@
 package com.rogercw.po;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Student {
@@ -8,9 +10,9 @@ public class Student {
     private String studentname;
 
     private String sex;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date grade;
 
     private Integer collegeid;

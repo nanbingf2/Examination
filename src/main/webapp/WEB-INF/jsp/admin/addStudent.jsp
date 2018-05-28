@@ -8,10 +8,10 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- 引入bootstrap -->
-	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 	<!-- 引入JQuery  bootstrap.js-->
-	<script src="/js/jquery-3.2.1.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<!-- 顶栏 -->
@@ -28,22 +28,22 @@
 						</div>
 				    </div>
 				    <div class="panel-body">
-						<form class="form-horizontal" role="form" action="/admin/addStudent" id="editfrom" method="post">
+						<form class="form-horizontal" role="form" action="addStudent" id="editfrom" method="post">
 							  <div class="form-group">
 							    <label for="inputEmail3" class="col-sm-2 control-label">学号</label>
 							    <div class="col-sm-10">
-							      <input type="number" class="form-control" id="inputEmail3" name="userid" placeholder="请输入学号"
+							      <input type="number" class="form-control" id="inputEmail3" name="studentid" placeholder="请输入学号"
 								  <c:if test='${student!=null}'>
-										 value="${student.userid}"
+										 value="${student.studentid}"
 								  </c:if>>
 							    </div>
 							  </div>
 							  <div class="form-group">
 							    <label for="inputPassword3" class="col-sm-2 control-label">姓名</label>
 							    <div class="col-sm-10">
-							      <input type="text" class="form-control" id="inputPassword3" name="username" placeholder="请输入姓名"
+							      <input type="text" class="form-control" id="inputPassword3" name="studentname" placeholder="请输入姓名"
 								  <c:if test='${student!=null}'>
-										 value="${student.username}"
+										 value="${student.studentname}"
 								  </c:if>>
 							    </div>
 							  </div>
@@ -61,7 +61,7 @@
 							  <div class="form-group">
 							    <label for="inputPassword3" class="col-sm-2 control-label">出生年份</label>
 							    <div class="col-sm-10">
-								    <input type="date" value="1996-09-02" name="birthyear"/>
+								    <input type="date" value="1996-09-02" name="birthday"/>
 							    </div>
 							  </div>
 							  <div class="form-group">
