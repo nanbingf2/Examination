@@ -29,9 +29,9 @@
 				    <div class="panel-heading">
 						<div class="row">
 					    	<h1 class="col-md-5">学生名单管理</h1>
-							<form class="bs-example bs-example-form col-md-5" role="form" style="margin: 20px 0 10px 0;" action="selectStudentByName" id="form1" method="post">
+							<form class="bs-example bs-example-form col-md-5" role="form" style="margin: 20px 0 10px 0;" action="showStudent" id="form1" method="post">
 								<div class="input-group">
-									<input type="text" class="form-control" placeholder="请输入姓名" name="findByName">
+									<input type="text" class="form-control" placeholder="请输入姓名" name="studentname">
 									<span class="input-group-addon btn" id="sub">搜索</span>
 								</div>
 							</form>
@@ -64,8 +64,8 @@
 									<td><fmt:formatDate value="${student.grade}" dateStyle="medium" /></td>
 									<td>${student.collegeName}</td>
 									<td>
-										<button class="btn btn-default btn-xs btn-info" onClick="location.href='/admin/editStudent?id=${student.studentid}'">修改</button>
-										<button class="btn btn-default btn-xs btn-danger btn-primary" onClick="location.href='/admin/removeStudent?id=${student.studentid}'">删除</button>
+										<button class="btn btn-default btn-xs btn-info" onClick="location.href='editStudent?id=${student.studentid}'">修改</button>
+										<button class="btn btn-default btn-xs btn-danger btn-primary" onClick="confirmd(${student.studentid})">删除</button>
 										<!--弹出框-->
 									</td>
 								</tr>
@@ -76,21 +76,21 @@
 						<c:if test="${Page != null}">
 							<nav style="text-align: center">
 								<ul class="pagination">
-									<li><a href="showStudent?page=${Page.upPageNo}">&laquo;上一页</a></li>
-									<li class="active">${Page.currentPage}</li>
+									<li><a href="showStudent?page=${Page.upPageNo}&studentname=${studentname}">&laquo;上一页</a></li>
+									<li class="active"><a href="">${Page.currentPage}</a></li>
 									<c:if test="${Page.currentPage+1 <= Page.totalPage}">
-										<li><a href="showStudent?page=${Page.currentPage+1}">${Page.currentPage+1}</a></li>
+										<li><a href="showStudent?page=${Page.currentPage+1}&studentname=${studentname}">${Page.currentPage+1}</a></li>
 									</c:if>
 									<c:if test="${Page.currentPage+2 <= Page.totalPage}">
-										<li><a href="showStudent?page=${Page.currentPage+2}">${Page.currentPage+2}</a></li>
+										<li><a href="showStudent?page=${Page.currentPage+2}&studentname=${studentname}">${Page.currentPage+2}</a></li>
 									</c:if>
 									<c:if test="${Page.currentPage+3 <= Page.totalPage}">
-										<li><a href="showStudent?page=${Page.currentPage+3}">${Page.currentPage+3}</a></li>
+										<li><a href="showStudent?page=${Page.currentPage+3}&studentname=${studentname}">${Page.currentPage+3}</a></li>
 									</c:if>
 									<c:if test="${Page.currentPage+4 <= Page.totalPage}">
-										<li><a href="showStudent?page=${Page.currentPage+4}">${Page.currentPage+4}</a></li>
+										<li><a href="showStudent?page=${Page.currentPage+4}&studentname=${studentname}">${Page.currentPage+4}</a></li>
 									</c:if>
-									<li><a href="showStudent?page=${Page.totalPage}">最后一页&raquo;</a></li>
+									<li><a href="showStudent?page=${Page.totalPage}&studentname=${studentname}">最后一页&raquo;</a></li>
 								</ul>
 							</nav>
 						</c:if>
@@ -109,15 +109,17 @@
 	<script type="text/javascript">
 		$("#nav li:nth-child(2)").addClass("active");
 
-        function confirmd() {
-            var msg = "您真的确定要删除吗？！";
-            if (confirm(msg)==true){
-                return true;
-            }else{
-                return false;
-            }
-        };
+		function confirmd(id) {
+			var msg = "您真的确定要删除吗？！";
+			if (confirm(msg)==true){
+				//window.location = "${ctx }/user/deleteUser?ids=" + ids.get();
+				location.href="deleteStudent?id="+id;
+			}else{
+				return false;
+			}
+		};
 
+		<!-- 搜索功能 -->
         $("#sub").click(function () {
             $("#form1").submit();
         });

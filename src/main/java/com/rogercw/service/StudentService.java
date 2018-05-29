@@ -16,7 +16,7 @@ public interface StudentService {
      * @param page
      * @return
      */
-    public List<StudentCustom> findByPage(Page page);
+    public List<StudentCustom> findByPage(Page page,StudentCustom student);
 
     /**
      * 删除指定学生
@@ -29,7 +29,7 @@ public interface StudentService {
      * @param id
      * @return
      */
-    public Student findById(int id);
+    public StudentCustom findById(int id);
 
     /**
      * 查询所有学生数量
@@ -41,7 +41,7 @@ public interface StudentService {
      * 更新学生信息
      * @param student
      */
-    public void updateById(Student student);
+    public void updateStudent(StudentCustom student);
 
     /**
      * 插入学生信息
@@ -54,5 +54,5 @@ public interface StudentService {
      * @param name
      * @return
      */
-    public List<Student> findByName(String name);
+    public List<StudentCustom> findByName(String name);
 }

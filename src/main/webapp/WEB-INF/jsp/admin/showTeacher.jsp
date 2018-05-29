@@ -9,10 +9,10 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- 引入bootstrap -->
-	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 	<!-- 引入JQuery  bootstrap.js-->
-	<script src="/js/jquery-3.2.1.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 
 	<%--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">--%>
 
@@ -29,13 +29,13 @@
 				    <div class="panel-heading">
 						<div class="row">
 					    	<h1 class="col-md-5">教师名单管理</h1>
-							<form class="bs-example bs-example-form col-md-5" role="form" style="margin: 20px 0 10px 0;" action="/admin/selectTeacher" id="form1" method="post">
+							<form class="bs-example bs-example-form col-md-5" role="form" style="margin: 20px 0 10px 0;" action="showTeacher" id="form1" method="post">
 								<div class="input-group">
-									<input type="text" class="form-control" placeholder="请输入姓名" name="findByName">
+									<input type="text" class="form-control" placeholder="请输入姓名" name="teachername">
 									<span class="input-group-addon btn" onclick="document.getElementById('form1').submit" id="sub">搜索</span>
 								</div>
 							</form>
-							<button class="btn btn-default col-md-2" style="margin-top: 20px" onClick="location.href='/admin/addTeacher'">
+							<button class="btn btn-default col-md-2" style="margin-top: 20px" onClick="location.href='addTeacher'">
 								添加教师信息
 								<sapn class="glyphicon glyphicon-plus"/>
 							</button>
@@ -59,17 +59,17 @@
 					        <tbody>
 							<c:forEach  items="${teacherList}" var="item">
 								<tr>
-									<td>${item.userid}</td>
-									<td>${item.username}</td>
+									<td>${item.teacherid}</td>
+									<td>${item.teachername}</td>
 									<td>${item.sex}</td>
-									<td><fmt:formatDate value="${item.birthyear}" dateStyle="medium" /></td>
+									<td><fmt:formatDate value="${item.birthday}" dateStyle="medium" /></td>
 									<td>${item.degree}</td>
 									<td>${item.title}</td>
 									<td><fmt:formatDate value="${item.grade}" dateStyle="medium" /></td>
 									<td>${item.collegeName}</td>
 									<td>
-										<button class="btn btn-default btn-xs btn-info" onClick="location.href='/admin/editTeacher?id=${item.userid}'">修改</button>
-										<button class="btn btn-default btn-xs btn-danger btn-primary" onClick="location.href='/admin/removeTeacher?id=${item.userid}'">删除</button>
+										<button class="btn btn-default btn-xs btn-info" onClick="location.href='editTeacher?id=${item.teacherid}'">修改</button>
+										<button class="btn btn-default btn-xs btn-danger btn-primary" onClick="confirmd(${item.teacherid})">删除</button>
 										<!--弹出框-->
 									</td>
 								</tr>
@@ -77,24 +77,24 @@
 					        </tbody>
 				    </table>
 				    <div class="panel-footer">
-						<c:if test="${pagingVO != null}">
+						<c:if test="${Page != null}">
 							<nav style="text-align: center">
 								<ul class="pagination">
-									<li><a href="/admin/showTeacher?page=${pagingVO.upPageNo}">&laquo;上一页</a></li>
-									<li class="active"><a href="">${pagingVO.curentPageNo}</a></li>
-									<c:if test="${pagingVO.curentPageNo+1 <= pagingVO.totalCount}">
-										<li><a href="/admin/showTeacher?page=${pagingVO.curentPageNo+1}">${pagingVO.curentPageNo+1}</a></li>
+									<li><a href="showTeacher?page=${Page.upPageNo}&teachername=${teachername}">&laquo;上一页</a></li>
+									<li class="active"><a href="">${Page.currentPage}</a></li>
+									<c:if test="${Page.currentPage+1 <= Page.totalPage}">
+										<li><a href="showTeacher?page=${Page.currentPage+1}&teachername=${teachername}">${Page.currentPage+1}</a></li>
 									</c:if>
-									<c:if test="${pagingVO.curentPageNo+2 <= pagingVO.totalCount}">
-										<li><a href="/admin/showTeacher?page=${pagingVO.curentPageNo+2}">${pagingVO.curentPageNo+2}</a></li>
+									<c:if test="${Page.currentPage+2 <= Page.totalPage}">
+										<li><a href="showTeacher?page=${Page.currentPage+2}&teachername=${teachername}">${Page.currentPage+2}</a></li>
 									</c:if>
-									<c:if test="${pagingVO.curentPageNo+3 <= pagingVO.totalCount}">
-										<li><a href="/admin/showTeacher?page=${pagingVO.curentPageNo+3}">${pagingVO.curentPageNo+3}</a></li>
+									<c:if test="${Page.currentPage+3 <= Page.totalPage}">
+										<li><a href="showTeacher?page=${Page.currentPage+3}&teachername=${teachername}">${Page.currentPage+3}</a></li>
 									</c:if>
-									<c:if test="${pagingVO.curentPageNo+4 <= pagingVO.totalCount}">
-										<li><a href="/admin/showTeacher?page=${pagingVO.curentPageNo+4}">${pagingVO.curentPageNo+4}</a></li>
+									<c:if test="${Page.currentPage+4 <= Page.totalPage}">
+										<li><a href="showTeacher?page=${Page.currentPage+4}&teachername=${teachername}">${Page.currentPage+4}</a></li>
 									</c:if>
-									<li><a href="/admin/showTeacher?page=${pagingVO.totalCount}">最后一页&raquo;</a></li>
+									<li><a href="showTeacher?page=${Page.totalPage}&teachername=${teachername}">最后一页&raquo;</a></li>
 								</ul>
 							</nav>
 						</c:if>
@@ -112,26 +112,27 @@
 </body>
 	<script type="text/javascript">
 		$("#nav li:nth-child(3)").addClass("active")
-
-        <c:if test="${pagingVO != null}">
-			if (${pagingVO.curentPageNo} == ${pagingVO.totalCount}) {
+		<!-- 翻页操作 -->
+		<c:if test="${Page != null}">
+			if (${Page.currentPage} == ${Page.totalPage}) {
 				$(".pagination li:last-child").addClass("disabled")
 			};
-
-			if (${pagingVO.curentPageNo} == ${1}) {
+			if (${Page.currentPage} == ${1}) {
 				$(".pagination li:nth-child(1)").addClass("disabled")
 			};
-        </c:if>
+		</c:if>
 
-        function confirmd() {
-            var msg = "您真的确定要删除吗？！";
-            if (confirm(msg)==true){
-                return true;
-            }else{
-                return false;
-            }
-        }
+		<!-- 删除操作 -->
+		function confirmd(id) {
+			var msg = "您真的确定要删除吗？！";
+			if (confirm(msg)==true){
+				location.href="deleteTeacher?id="+id;
+			}else{
+				return false;
+			}
+		};
 
+		<!-- 搜索操作 -->
         $("#sub").click(function () {
             $("#form1").submit();
         });

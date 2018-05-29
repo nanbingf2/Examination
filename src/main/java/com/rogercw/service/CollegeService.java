@@ -14,4 +14,5 @@ public interface CollegeService {
      * @return
      */
     public List<College> findAllCollege();
+
 }

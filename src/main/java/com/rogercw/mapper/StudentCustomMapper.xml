@@ -2,10 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rogercw.mapper.StudentCustomMapper">
 
-  <select id="findByPage" parameterType="com.rogercw.util.Page" resultType="com.rogercw.po.custom.StudentCustom">
+  <select id="findByPage" parameterType="java.util.Map" resultType="com.rogercw.po.custom.StudentCustom">
       SELECT student.*,college.collegename
       FROM student,college
       WHERE student.collegeId=college.collegeid
-            LIMIT #{toPageNo} , #{pageSize}
+            <if test="#{student!=null}">
+                <if test="student.studentname!=null">
+                    <bind name="name" value="'%'+_parameter.student.studentname+'%'"/>
+                    AND studentname LIKE #{name}
+                </if>
+            </if>
+            LIMIT #{page.toPageNo} , #{page.pageSize}
+
   </select>
 </mapper>

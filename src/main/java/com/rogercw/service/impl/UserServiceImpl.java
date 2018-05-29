@@ -34,4 +34,12 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         userMapper.insert(user);
     }
+
+    @Override
+    public void deleteByName(String id) {
+        UserExample example=new UserExample();
+        UserExample.Criteria criteria=example.createCriteria();
+        criteria.andUsernameEqualTo(id);
+        userMapper.deleteByExample(example);
+    }
 }

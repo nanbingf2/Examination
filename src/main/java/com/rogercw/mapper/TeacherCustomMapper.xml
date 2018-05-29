@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rogercw.mapper.TeacherCustomMapper">
+
+  <select id="findByPage" parameterType="java.util.Map" resultType="com.rogercw.po.custom.TeacherCustom">
+      SELECT teacher.*,college.collegename
+      FROM teacher,college
+      WHERE teacher.collegeId=college.collegeid
+            <if test="#{teacher!=null}">
+                <if test="teacher.teachername!=null">
+                    <bind name="name" value="'%'+_parameter.teacher.teachername+'%'"/>
+                    AND teachername LIKE #{name}
+                </if>
+            </if>
+            LIMIT #{page.toPageNo} , #{page.pageSize}
+
+  </select>
+</mapper>

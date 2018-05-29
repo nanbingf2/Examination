@@ -28,4 +28,5 @@ public class CollegeServiceImpl implements CollegeService{
         criteria.andCollegeidIsNotNull();
         return collegeMapper.selectByExample(example);
     }
+
 }

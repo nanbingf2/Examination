@@ -17,23 +17,12 @@ public class Page {
     }
 
     public void setCurrentPage(int currentPage) {
-        //设置上一页
-        if(currentPage<=1){
-            this.currentPage=1;
-            this.upPageNo=1;
-        }else{
-            this.currentPage=currentPage;
-            this.upPageNo=currentPage-1;
+        if (currentPage != 1) {
+            this.upPageNo = currentPage - 1;
         }
+        this.nextPageNo = currentPage + 1;
 
-        //设置下一页
-        if(currentPage>this.totalPage){
-            this.currentPage=this.totalPage;
-            this.nextPageNo=this.totalPage;
-        }else{
-            this.currentPage=currentPage;
-            this.nextPageNo = currentPage+1;
-        }
+        this.currentPage = currentPage;
     }
 
     public int getTotalPage() {

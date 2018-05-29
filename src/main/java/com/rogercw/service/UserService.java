@@ -10,4 +10,6 @@ public interface UserService {
     public User findUserByUserNameAndPassword(String username, String password);
 
     public void save(User user);
+
+    public void deleteByName(String id);
 }
