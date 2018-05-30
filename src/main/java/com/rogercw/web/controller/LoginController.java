@@ -28,7 +28,8 @@ public class LoginController {
         if(user!=null){
             //将用户保存到session中
             session.setAttribute("user",user);
-            return "redirect:/admin/showStudent";
+            //return "redirect:/admin/showStudent";
+            return "redirect:/student/showCourse";
         }else{
             return "loginUI";
         }

@@ -42,4 +42,22 @@ public class UserServiceImpl implements UserService {
         criteria.andUsernameEqualTo(id);
         userMapper.deleteByExample(example);
     }
+
+    @Override
+    public User findByUserName(String userName) {
+        UserExample example=new UserExample();
+        UserExample.Criteria criteria=example.createCriteria();
+        criteria.andUsernameEqualTo(userName);
+        User user=userMapper.selectByExample(example).get(0);
+        return user;
+    }
+
+    @Override
+    public void updateUser(User user) {
+        //这里使用的用户名来进行更新的
+        UserExample example=new UserExample();
+        UserExample.Criteria criteria=example.createCriteria();
+        criteria.andUsernameEqualTo(user.getUsername());
+        userMapper.updateByExample(user,example);
+    }
 }

@@ -119,7 +119,7 @@ create table selectcourse
 (
    courseId             int(12) not null,
    studentId            int(12) not null,
-   mark                 int not null comment '成绩',
+   mark                 int default null comment '成绩',
    primary key (courseId, studentId),
    key AK_Key_courseId (courseId),
    key AK_Key_studentId (studentId),

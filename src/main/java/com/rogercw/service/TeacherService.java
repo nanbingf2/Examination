@@ -49,4 +49,6 @@ public interface TeacherService {
      */
     public boolean save(Teacher teacher);
 
+    public List<TeacherCustom> findAll();
+
 }

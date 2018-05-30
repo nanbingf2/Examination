@@ -86,4 +86,25 @@ public class TeacherServiceImpl implements TeacherService {
         return false;
     }
 
+    @Override
+    public List<TeacherCustom> findAll() {
+        TeacherExample example=new TeacherExample();
+        TeacherExample.Criteria criteria=example.createCriteria();
+        criteria.andTeacheridIsNotNull();
+        List<Teacher> teacherList = teacherMapper.selectByExample(example);
+
+        List<TeacherCustom> teacherCustomList=null;
+        if(teacherList!=null){
+            teacherCustomList=new ArrayList<>();
+            for (Teacher teacher : teacherList) {
+                TeacherCustom teacherCustom=new TeacherCustom();
+                //类拷贝
+                BeanUtils.copyProperties(teacher,teacherCustom);
+                teacherCustomList.add(teacherCustom);
+            }
+
+        }
+        return teacherCustomList;
+    }
+
 }

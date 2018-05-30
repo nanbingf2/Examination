@@ -70,6 +70,7 @@
 									<td>
 										<button class="btn btn-default btn-xs btn-info" onClick="location.href='editTeacher?id=${item.teacherid}'">修改</button>
 										<button class="btn btn-default btn-xs btn-danger btn-primary" onClick="confirmd(${item.teacherid})">删除</button>
+										<button class="btn btn-default btn-xs btn-danger btn-primary" onClick="resetPassword(${item.teacherid})">重置密码</button>
 										<!--弹出框-->
 									</td>
 								</tr>
@@ -127,6 +128,16 @@
 			var msg = "您真的确定要删除吗？！";
 			if (confirm(msg)==true){
 				location.href="deleteTeacher?id="+id;
+			}else{
+				return false;
+			}
+		};
+
+		<!-- 重置密码 -->
+		function resetPassword(id) {
+			var msg = "您真的确定要重置密码吗？！";
+			if (confirm(msg)==true){
+				location.href="resetPassword?id="+id;
 			}else{
 				return false;
 			}

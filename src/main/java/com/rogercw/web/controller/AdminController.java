@@ -1,15 +1,14 @@
 package com.rogercw.web.controller;
 
+import com.rogercw.exception.CustomException;
 import com.rogercw.po.College;
 import com.rogercw.po.Student;
 import com.rogercw.po.Teacher;
 import com.rogercw.po.User;
+import com.rogercw.po.custom.CourseCustom;
 import com.rogercw.po.custom.StudentCustom;
 import com.rogercw.po.custom.TeacherCustom;
-import com.rogercw.service.CollegeService;
-import com.rogercw.service.StudentService;
-import com.rogercw.service.TeacherService;
-import com.rogercw.service.UserService;
+import com.rogercw.service.*;
 import com.rogercw.util.CodingUtil;
 import com.rogercw.util.Page;
 import org.springframework.stereotype.Controller;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
@@ -37,6 +37,8 @@ public class AdminController {
     private UserService userService;
     @Resource
     private TeacherService teacherService;
+    @Resource
+    private CourseService courseService;
 
     @RequestMapping("/showStudent")
     public String showStudent(Integer page,Model model, StudentCustom student) throws UnsupportedEncodingException {
@@ -148,7 +150,6 @@ public class AdminController {
         //设置页面要显示的数据
         model.addAttribute("Page",p);
         model.addAttribute("teacherList",teacherList);
-        System.out.println(teachername);
         model.addAttribute("teachername",teachername);
         return "admin/showTeacher";
     }
@@ -221,6 +222,83 @@ public class AdminController {
 
 
     //***************************课程管理*******************************
+    @RequestMapping("showCourse")
+    public String showCourse(Integer page, Model model, CourseCustom course) throws UnsupportedEncodingException {
+        Page p=new Page();
+        this.setPageNo(page,p);
+        //解决get方式乱码问题
+        String coursename=CodingUtil.encode(course.getCoursename());
+        course.setCoursename(coursename);
+        List<CourseCustom> courseList=courseService.findByPage(p,course);
+        int count=courseService.findAllCount();
+        p.setTotalPage(count);
+        //设置页面要显示的数据
+        model.addAttribute("Page",p);
+        model.addAttribute("courseList",courseList);
+        model.addAttribute("coursename",coursename);
+        return "admin/showCourse";
+    }
+
+    @RequestMapping(value = "/addCourse",method = RequestMethod.GET)
+    public String addCourseUI(Model model){
+        //查询所有院系与老师,以便用户选择
+        List<College> collegeList=collegeService.findAllCollege();
+        List<TeacherCustom> teacherList=teacherService.findAll();
+        model.addAttribute("collegeList",collegeList);
+        model.addAttribute("teacherList",teacherList);
+        return "admin/addCourse";
+    }
+
+    @RequestMapping(value = "/addCourse",method = RequestMethod.POST)
+    public String addCourse(CourseCustom courseCustom, Model model){
+        boolean flag=courseService.save(courseCustom);
+        if(!flag){
+            //数据库中已经存在该id
+            model.addAttribute("message","课程编号已经存在,请重新输入");
+            return "error";
+        }
+        return "redirect:/admin/showCourse";
+    }
+
+    @RequestMapping(value = "/editCourse",method = RequestMethod.GET)
+    public String editCourseUI(Model model,Integer id) throws Exception {
+        if (id == null) {
+            return "redirect:/admin/showCourse";
+        }
+        //查询当前课程信息,以便数据回显
+        CourseCustom course = courseService.findById(id);
+        if (course == null) {
+            //没有查到学生
+            throw new Exception();
+        }
+
+        //查询所有院系与教师,供管理员选择
+        List<College> collegeList=collegeService.findAllCollege();
+        List<TeacherCustom> teacherList=teacherService.findAll();
+        model.addAttribute("course",course);
+        model.addAttribute("collegeList",collegeList);
+        model.addAttribute("teacherList",teacherList);
+        return "admin/editCourse";
+    }
+
+
+    @RequestMapping(value = "/editCourse",method = RequestMethod.POST)
+    public String editCourse(CourseCustom courseCustom){
+        courseService.updateCourse(courseCustom);
+        //重定向到分页查询页面
+        return "redirect:/admin/showCourse";
+    }
+
+    @RequestMapping("/deleteCourse")
+    public String deleteCourse(Integer id){
+        if (id == null) {
+            return "admin/showCourse";
+        }
+        //在学生表中删除记录
+        courseService.deleteById(id);
+
+        return "redirect:/admin/showCourse";
+    }
 
 
 
@@ -230,6 +308,37 @@ public class AdminController {
         return "admin/editPassword";
     }
 
+    @RequestMapping(value = "/editPassword",method = RequestMethod.POST)
+    public String editPassword(String password, String password1,
+                                HttpSession session,Model model){
+        //从session中获取当前用户的密码
+        User user= (User) session.getAttribute("user");
+        String pwd=user.getPassword();
+        if(!password.equals(pwd)){
+            //输入的旧密码与当前用户的密码错误
+            String message="输入的密码错误";
+            model.addAttribute("message",message);
+            return "admin/editPassword";
+        }
+        //重新设置密码并更行当前用户
+        user.setPassword(password1);
+        userService.updateUser(user);
+        session.setAttribute("user",user);
+        return "admin/editPassword";
+    }
+
+
+    @RequestMapping("/resetPassword")
+    public String resetPassword(Integer id) throws Exception {
+        User u=userService.findByUserName(id.toString());
+        if (u==null){
+            throw new CustomException("指定用户不存在");
+        }
+        //重置密码并更新用户
+        u.setPassword("123");
+        userService.updateUser(u);
+        return "redirect:/admin/showStudent";
+    }
 
 
     private void setPageNo(Integer pageNo,Page p){
