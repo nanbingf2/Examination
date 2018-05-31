@@ -29,7 +29,8 @@ public class LoginController {
             //将用户保存到session中
             session.setAttribute("user",user);
             //return "redirect:/admin/showStudent";
-            return "redirect:/student/showCourse";
+            //return "redirect:/student/showCourse";
+            return "redirect:/teacher/showCourse";
         }else{
             return "loginUI";
         }

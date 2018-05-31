@@ -8,4 +8,5 @@ import java.util.Map;
 public interface CourseCustomMapper {
 
     public List<CourseCustom> findByPage(Map<String, Object> params);
+
 }

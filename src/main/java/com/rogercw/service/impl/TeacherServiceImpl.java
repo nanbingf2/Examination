@@ -6,6 +6,7 @@ import com.rogercw.mapper.TeacherMapper;
 import com.rogercw.po.College;
 import com.rogercw.po.Teacher;
 import com.rogercw.po.TeacherExample;
+import com.rogercw.po.custom.CourseCustom;
 import com.rogercw.po.custom.TeacherCustom;
 import com.rogercw.service.TeacherService;
 import com.rogercw.util.Page;

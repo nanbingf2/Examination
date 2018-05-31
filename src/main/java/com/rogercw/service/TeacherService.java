@@ -1,6 +1,7 @@
 package com.rogercw.service;
 
 import com.rogercw.po.Teacher;
+import com.rogercw.po.custom.CourseCustom;
 import com.rogercw.po.custom.TeacherCustom;
 import com.rogercw.util.Page;
 
@@ -50,5 +51,6 @@ public interface TeacherService {
     public boolean save(Teacher teacher);
 
     public List<TeacherCustom> findAll();
+
 
 }

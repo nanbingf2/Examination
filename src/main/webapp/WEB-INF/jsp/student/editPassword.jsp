@@ -6,10 +6,10 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- 引入bootstrap -->
-	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 	<!-- 引入JQuery  bootstrap.js-->
-	<script src="/js/jquery-3.2.1.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<!-- 顶栏 -->
@@ -26,11 +26,11 @@
 						</div>
 				    </div>
 				    <div class="panel-body">
-						<form name="reset" class="form-horizontal" role="form" action="/passwordRest" id="editfrom" method="post" onsubmit="return check()">
+						<form name="reset" class="form-horizontal" role="form" action="editPassword" id="editfrom" method="post" onsubmit="return check()">
 							  <div class="form-group">
 							    <label for="inputEmail3" class="col-sm-2 control-label">旧密码</label>
 							    <div class="col-sm-10">
-							      <input type="text" class="form-control" name="oldPassword" id="inputEmail3" placeholder="请输入旧密码" >
+							      <input type="text" class="form-control" name="password" id="inputEmail3" placeholder="请输入旧密码" >
 							    </div>
 							  </div>
 							  <div class="form-group">
@@ -66,7 +66,7 @@
 <script>
     $("#nav li:nth-child(4)").addClass("active")
     function check() {
-        if(reset.oldPassword.value==""||reset.oldPassword.value==null)
+        if(reset.password.value==""||reset.password.value==null)
         {alert("请输入旧账户密码");return false;}
         if(reset.password1.value==""||reset.password1.value==null)
         {alert("请输入重置密码");return false;}

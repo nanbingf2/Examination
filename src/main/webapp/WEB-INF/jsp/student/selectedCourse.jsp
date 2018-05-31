@@ -52,16 +52,16 @@
 								<%--输出还没修完的课程--%>
 								<c:if test="${!item.over}">
 									<tr>
-										<td>${item.couseCustom.courseid}</td>
-										<td>${item.couseCustom.coursename}</td>
-										<td>${item.couseCustom.teacherid}</td>
-										<td>${item.couseCustom.coursetime}</td>
-										<td>${item.couseCustom.classroom}</td>
-										<td>${item.couseCustom.courseweek}</td>
-										<td>${item.couseCustom.coursetype}</td>
-										<td>${item.couseCustom.score}</td>
+										<td>${item.courseCustom.courseid}</td>
+										<td>${item.courseCustom.coursename}</td>
+										<td>${item.courseCustom.teacherid}</td>
+										<td>${item.courseCustom.coursetime}</td>
+										<td>${item.courseCustom.classroom}</td>
+										<td>${item.courseCustom.courseweek}</td>
+										<td>${item.courseCustom.coursetype}</td>
+										<td>${item.courseCustom.score}</td>
 										<td>
-											<button class="btn btn-default btn-xs btn-info" onClick="location.href='/student/outCourse?id=${item.courseid}'">退课</button>
+											<button class="btn btn-default btn-xs btn-info" onClick="outCourse(${item.courseCustom.courseid})">退课</button>
 											<!--弹出框-->
 										</td>
 									</tr>
@@ -70,24 +70,24 @@
 					        </tbody>
 				    </table>
 				    <div class="panel-footer">
-						<c:if test="${pagingVO != null}">
+						<c:if test="${Page != null}">
 							<nav style="text-align: center">
 								<ul class="pagination">
-									<li><a href="/student/showCourse?page=${pagingVO.upPageNo}">&laquo;上一页</a></li>
-									<li class="active"><a href="">${pagingVO.curentPageNo}</a></li>
-									<c:if test="${pagingVO.curentPageNo+1 <= pagingVO.totalCount}">
-										<li><a href="/student/showCourse?page=${pagingVO.curentPageNo+1}">${pagingVO.curentPageNo+1}</a></li>
+									<li><a href="selectedCourse?page=${Page.upPageNo}">&laquo;上一页</a></li>
+									<li class="active"><a href="">${Page.currentPage}</a></li>
+									<c:if test="${Page.currentPage+1 <= Page.totalPage}">
+										<li><a href="selectedCourse?page=${Page.currentPage+1}">${Page.currentPage+1}</a></li>
 									</c:if>
-									<c:if test="${pagingVO.curentPageNo+2 <= pagingVO.totalCount}">
-										<li><a href="/student/showCourse?page=${pagingVO.curentPageNo+2}">${pagingVO.curentPageNo+2}</a></li>
+									<c:if test="${Page.currentPage+2 <= Page.totalPage}">
+										<li><a href="selectedCourse?page=${Page.currentPage+2}">${Page.currentPage+2}</a></li>
 									</c:if>
-									<c:if test="${pagingVO.curentPageNo+3 <= pagingVO.totalCount}">
-										<li><a href="/student/showCourse?page=${pagingVO.curentPageNo+3}">${pagingVO.curentPageNo+3}</a></li>
+									<c:if test="${Page.currentPage+3 <= Page.totalPage}">
+										<li><a href="selectedCourse?page=${Page.currentPage+3}">${Page.currentPage+3}</a></li>
 									</c:if>
-									<c:if test="${pagingVO.curentPageNo+4 <= pagingVO.totalCount}">
-										<li><a href="/student/showCourse?page=${pagingVO.curentPageNo+4}">${pagingVO.curentPageNo+4}</a></li>
+									<c:if test="${Page.currentPage+4 <= Page.totalPage}">
+										<li><a href="selectedCourse?page=${Page.currentPage+4}">${Page.currentPage+4}</a></li>
 									</c:if>
-									<li><a href="/student/showCourse?page=${pagingVO.totalCount}">最后一页&raquo;</a></li>
+									<li><a href="selectedCourse?page=${Page.totalPage}">最后一页&raquo;</a></li>
 								</ul>
 							</nav>
 						</c:if>
@@ -106,20 +106,20 @@
 	<script type="text/javascript">
 		<%--设置菜单中--%>
 		$("#nav li:nth-child(2)").addClass("active")
-        <c:if test="${pagingVO != null}">
-        if (${pagingVO.curentPageNo} == ${pagingVO.totalCount}) {
-            $(".pagination li:last-child").addClass("disabled")
-        };
+		<c:if test="${Page != null}">
+		if (${Page.currentPage} == ${Page.totalPage}) {
+			$(".pagination li:last-child").addClass("disabled")
+		};
 
-        if (${pagingVO.curentPageNo} == ${1}) {
-            $(".pagination li:nth-child(1)").addClass("disabled")
-        };
-        </c:if>
+		if (${Page.currentPage} == ${1}) {
+			$(".pagination li:nth-child(1)").addClass("disabled")
+		};
+		</c:if>
 
-        function confirmd() {
+        function outCourse(id) {
             var msg = "您真的确定要删除吗？！";
             if (confirm(msg)==true){
-                return true;
+                location.href="outCourse?courseId="+id;
             }else{
                 return false;
             }

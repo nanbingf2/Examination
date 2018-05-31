@@ -11,6 +11,9 @@
                     <bind name="name" value="'%'+_parameter.course.coursename+'%'"/>
                     AND coursename LIKE #{name}
                 </if>
+                <if test="course.teacherid!=null">
+                    AND teacherid = #{course.teacherid}
+                </if>
             </if>
             LIMIT #{page.toPageNo} , #{page.pageSize}
 

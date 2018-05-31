@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rogercw.mapper.SelectCourseCustomMapper">
+
+    <resultMap id="selectCourseMap" type="com.rogercw.po.custom.SelectCourseCustom">
+        <result column="courseid" property="courseCustom.courseid"/>
+        <result column="coursename" property="courseCustom.coursename"/>
+        <result column="teacherid" property="courseCustom.teacherid"/>
+        <result column="coursetime" property="courseCustom.coursetime"/>
+        <result column="courseweek" property="courseCustom.courseweek"/>
+        <result column="coursetype" property="courseCustom.coursetype"/>
+        <result column="collegeid" property="courseCustom.collegeid"/>
+        <result column="score" property="courseCustom.score"/>
+        <result column="mark" property="mark"/>
+    </resultMap>
+
+
+  <select id="findSelectCourseByPage" parameterType="java.util.Map" resultMap="selectCourseMap">
+      SELECT course.*,selectcourse.mark
+      FROM course,selectcourse
+      WHERE course.courseid=selectcourse.courseid
+            <if test="studentId!=null">
+              AND selectcourse.studentid=#{studentId}
+            </if>
+            LIMIT #{page.toPageNo} , #{page.pageSize}
+  </select>
+
+    <select id="selectCount" parameterType="int" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM course,selectcourse
+        WHERE course.courseid=selectcourse.courseid
+            AND selectcourse.studentid=#{studentId}
+    </select>
+
+    <select id="findGradeByCourseId" parameterType="java.util.HashMap" resultType="com.rogercw.po.custom.SelectCourseCustom">
+        SELECT student.studentid,student.studentname,selectcourse.mark
+        FROM student,selectcourse
+        WHERE student.studentid=selectcourse.studentid
+              AND selectcourse.courseid=#{courseid}
+        LIMIT #{page.toPageNo} , #{page.pageSize}
+    </select>
+</mapper>

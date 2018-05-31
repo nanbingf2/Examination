@@ -3,16 +3,29 @@
 <mapper namespace="com.rogercw.mapper.TeacherCustomMapper">
 
   <select id="findByPage" parameterType="java.util.Map" resultType="com.rogercw.po.custom.TeacherCustom">
-      SELECT teacher.*,college.collegename
-      FROM teacher,college
-      WHERE teacher.collegeId=college.collegeid
-            <if test="#{teacher!=null}">
-                <if test="teacher.teachername!=null">
-                    <bind name="name" value="'%'+_parameter.teacher.teachername+'%'"/>
-                    AND teachername LIKE #{name}
+      SELECT course.*,college.collegename
+      FROM course,college
+      WHERE course.collegeId=college.collegeid
+            <if test="#{course!=null}">
+                <if test="course.coursename!=null">
+                    <bind name="name" value="'%'+_parameter.course.coursename+'%'"/>
+                    AND coursename LIKE #{name}
                 </if>
             </if>
             LIMIT #{page.toPageNo} , #{page.pageSize}
+  </select>
 
+
+    <select id="findTeachCourseByPage" parameterType="java.util.Map" resultType="com.rogercw.po.custom.CourseCustom">
+      SELECT course.*
+      FROM course
+      WHERE teacherid=#{teacherId}
+            <if test="#{course!=null}">
+                <if test="course.coursename!=null">
+                    <bind name="name" value="'%'+_parameter.course.coursename+'%'"/>
+                    AND coursename LIKE #{name}
+                </if>
+            </if>
+            LIMIT #{page.toPageNo} , #{page.pageSize}
   </select>
 </mapper>

@@ -20,4 +20,6 @@ public class CourseCustom extends Course {
     public void setCollegeName(String collegeName) {
         this.collegeName = collegeName;
     }
+
+
 }

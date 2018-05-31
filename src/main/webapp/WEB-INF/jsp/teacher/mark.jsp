@@ -6,10 +6,10 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- 引入bootstrap -->
-	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 	<!-- 引入JQuery  bootstrap.js-->
-	<script src="/js/jquery-3.2.1.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<!-- 顶栏 -->
@@ -26,22 +26,22 @@
 						</div>
 				    </div>
 				    <div class="panel-body">
-						<form name="reset" class="form-horizontal" role="form" action="/teacher/mark" id="editfrom" method="post" onsubmit="return check()">
+						<form name="reset" class="form-horizontal" role="form" action="mark" id="editfrom" method="post" onsubmit="return check()">
 							<div class="form-group">
 								<div class="col-sm-10">
-									<input  readonly="readonly" type="hidden" class="form-control" name="courseid" id="inputEmail3" value="${selectedCourse.courseid}">
+									<input  readonly="readonly" type="hidden" class="form-control" name="courseid" id="inputEmail3" value="${selectCourse.courseid}">
 								</div>
 							</div>
 							<div class="form-group">
 							    <label for="inputEmail3" class="col-sm-2 control-label">学号</label>
 							    <div class="col-sm-10">
-							      <input  readonly="readonly" type="text" class="form-control" name="studentid" id="inputEmail3" value="${selectedCourse.studentid}">
+							      <input  readonly="readonly" type="text" class="form-control" name="studentid" id="inputEmail3" value="${selectCourse.studentid}">
 							    </div>
 							  </div>
 							  <div class="form-group">
 							    <label for="inputPassword3" class="col-sm-2 control-label">姓名</label>
 							    <div class="col-sm-10">
-							      <input  readonly="readonly" type="text" name="name" class="form-control" id="inputPassword3" value="${selectedCourse.studentCustom.username}">
+							      <input  readonly="readonly" type="text" name="studentname" class="form-control" id="inputPassword3" value="${selectCourse.studentname}">
 							    </div>
 							  </div>
 							  <div class="form-group">
