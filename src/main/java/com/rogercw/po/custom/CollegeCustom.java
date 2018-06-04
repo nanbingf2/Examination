@@ -7,6 +7,4 @@ import com.rogercw.po.College;
  */
 public class CollegeCustom extends College {
 
-
-
 }

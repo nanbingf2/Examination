@@ -10,6 +10,9 @@ import com.rogercw.service.SelectCourseService;
 import com.rogercw.service.UserService;
 import com.rogercw.util.CodingUtil;
 import com.rogercw.util.Page;
+import com.rogercw.util.SystemUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,17 +40,30 @@ public class StudentController {
 
     //显示所有的课程,分页
     @RequestMapping("/showCourse")
-    public String showCourse(Integer page, Model model, CourseCustom course) throws UnsupportedEncodingException {
-        Page p=new Page();
-        this.setPageNo(page,p);
+    public String showCourse(Integer page, Model model,
+                             CourseCustom course,HttpSession session) throws UnsupportedEncodingException {
+
+        Page p=SystemUtils.setPageNum(page);
         //解决get方式乱码问题
         String coursename= CodingUtil.encode(course.getCoursename());
         course.setCoursename(coursename);
         List<CourseCustom> courseList=courseService.findByPage(p,course);
-        int count=courseService.findAllCount();
+        int count=courseService.findAllCount(course);
         p.setTotalPage(count);
+
         //设置页面要显示的数据
+        //1：查询正在学的课程数量
+        SelectCourse selectCourse=new SelectCourse();
+        selectCourse.setMark(0);
+        selectCourse.setStudentid(Integer.parseInt(SystemUtils.getCurrentUserName()));
+        int selectCourseCount=selectCourseService.selectCount(selectCourse);
+        //2:查询已修完的课程数量
+        selectCourse.setMark(1);
+        int finishedCourseCount=selectCourseService.selectCount(selectCourse);
         model.addAttribute("Page",p);
+        session.setAttribute("allCourseCount",count);
+        session.setAttribute("selectCourseCount",selectCourseCount);
+        session.setAttribute("finishedCourseCount",finishedCourseCount);
         model.addAttribute("coursename",coursename);
         model.addAttribute("courseList",courseList);
         return "student/showCourse";
@@ -57,9 +73,11 @@ public class StudentController {
     @RequestMapping("/stuSelectedCourse")
     public String stuSelectedCourse(Integer id, HttpSession session) throws Exception {
         //获取当前登录学生的studentname(学生的编号)
-        User user= (User) session.getAttribute("user");
+        //User user= (User) session.getAttribute("user");
+
         //根据学生编号获取该学生已选的课程
-        List<SelectCourse> selectCourseList=selectCourseService.findSelectCourse(Integer.parseInt(user.getUsername()));
+        int studentId=Integer.parseInt(SystemUtils.getCurrentUserName());
+        List<SelectCourse> selectCourseList=selectCourseService.findSelectCourse(studentId);
         for(SelectCourse selectCourse : selectCourseList){
             if(id==selectCourse.getCourseid()){
                 //当前课程已经被选
@@ -68,7 +86,7 @@ public class StudentController {
         }
         SelectCourse selectCourse=new SelectCourse();
         selectCourse.setCourseid(id);
-        selectCourse.setStudentid(Integer.parseInt(user.getUsername()));
+        selectCourse.setStudentid(studentId);
         selectCourseService.save(selectCourse);
         return "redirect:/student/selectedCourse";
     }
@@ -77,26 +95,22 @@ public class StudentController {
     @RequestMapping("/selectedCourse")
     public String selectedCourse(Integer page, Model model,
                                  HttpSession session) throws UnsupportedEncodingException {
-        Page p=new Page();
-        this.setPageNo(page,p);
+        Page p=SystemUtils.setPageNum(page);
         //获取当前登录学生的studentname(学生的编号)
-        User user= (User) session.getAttribute("user");
-        //根据学生编号获取该学生已选的课程
-        List<SelectCourseCustom> courseList=selectCourseService
-                .findSelectCourseByPage(Integer.parseInt(user.getUsername()),p);
+        //User user= (User) session.getAttribute("user");
+        int studentId=Integer.parseInt(SystemUtils.getCurrentUserName());
 
-        //对当前学生已选的课程进一步筛选(选出未修完的课程)
-        List<SelectCourseCustom> selectedCourseList=new ArrayList<>();
-        for(SelectCourseCustom selectCourseCustom : courseList){
-            if (selectCourseCustom.getMark() == null) {
-                //已选但未修完的课程
-                selectCourseCustom.setOver(false);
-                selectedCourseList.add(selectCourseCustom);
-            }
-        }
+        //创建SelectCourse对象,并设置相关属性
+        SelectCourse selectCourse=new SelectCourse();
+        selectCourse.setStudentid(studentId);
+        //设置Mark属性为0,表示查询正在学习的课程
+        selectCourse.setMark(0);
+        List<SelectCourseCustom> selectedCourseList=selectCourseService
+                .findSelectCourseByPage(selectCourse,p);
 
-        p.setTotalPage(selectedCourseList.size());
+        p.setTotalPage(selectCourseService.selectCount(selectCourse));
         //设置页面要显示的数据
+        session.setAttribute("selectCourseCount",selectCourseService.selectCount(selectCourse));
         model.addAttribute("Page",p);
         model.addAttribute("selectedCourseList",selectedCourseList);
         return "student/selectedCourse";
@@ -105,29 +119,24 @@ public class StudentController {
 
     //显示已修课程
     @RequestMapping("/overCourse")
-    public String overCourse(Integer page, Model model,
-                             HttpSession session){
-        Page p=new Page();
-        this.setPageNo(page,p);
+    public String overCourse(Integer page, Model model,HttpSession session){
+        Page p=SystemUtils.setPageNum(page);
         //获取当前登录学生的studentname(学生的编号)
-        User user= (User) session.getAttribute("user");
-        //根据学生编号获取该学生已选的课程
-        List<SelectCourseCustom> courseList=selectCourseService
-                .findSelectCourseByPage(Integer.parseInt(user.getUsername()),p);
+        //User user= (User) session.getAttribute("user");
+        int studentId=Integer.parseInt(SystemUtils.getCurrentUserName());
 
-        //对当前学生已选的课程进一步筛选(选出已修完的课程)
-        List<SelectCourseCustom> selectedCourseList=new ArrayList<>();
-        for(SelectCourseCustom selectCourseCustom : courseList){
-            if (selectCourseCustom.getMark() != null) {
-                //已选但未修完的课程
-                selectCourseCustom.setOver(true);
-                selectedCourseList.add(selectCourseCustom);
-            }
-        }
+        //创建SelectCourse对象,并设置相关属性
+        SelectCourse selectCourse=new SelectCourse();
+        selectCourse.setStudentid(studentId);
+        //设置Mark属性不为空,表示查询已修完的课程
+        selectCourse.setMark(1);
+        List<SelectCourseCustom> selectedCourseList=selectCourseService
+                .findSelectCourseByPage(selectCourse,p);
 
-        p.setTotalPage(selectedCourseList.size());
+        p.setTotalPage(selectCourseService.selectCount(selectCourse));
         //设置页面要显示的数据
         model.addAttribute("Page",p);
+        session.setAttribute("finishedCourseCount",selectCourseService.selectCount(selectCourse));
         model.addAttribute("selectedCourseList",selectedCourseList);
         return "student/overCourse";
     }
@@ -139,8 +148,11 @@ public class StudentController {
         if (courseId == null) {
             return "student/selectedCourse";
         }
-        User user= (User) session.getAttribute("user");
-        selectCourseService.deleteSelectCourse(Integer.parseInt(user.getUsername()),courseId);
+        //获得当前用户
+        //User user= (User) session.getAttribute("user");
+        Subject user=SecurityUtils.getSubject();
+        String studentName= (String) user.getPrincipal();
+        selectCourseService.deleteSelectCourse(Integer.parseInt(studentName),courseId);
         return "redirect:/student/selectedCourse";
     }
 
@@ -151,34 +163,5 @@ public class StudentController {
         return "student/editPassword";
     }
 
-    //修改密码操作
-    @RequestMapping(value = "/editPassword",method = RequestMethod.POST)
-    public String editPassword(String password,String password1,
-                               HttpSession session,Model model){
-        //从session中获取当前用户的密码
-        User user= (User) session.getAttribute("user");
-        String pwd=user.getPassword();
-        if(!pwd.equals(password)){
-            //输入的旧密码与当前用户的密码错误
-            String message="输入的密码错误";
-            model.addAttribute("message",message);
-            return "admin/editPassword";
-        }
-        //重新设置密码并更行当前用户
-        user.setPassword(password1);
-        userService.updateUser(user);
-        session.setAttribute("user",user);
-        return "student/editPassword";
-    }
 
-
-    private void setPageNo(Integer pageNo,Page p){
-        if(pageNo==null||pageNo==0){
-            //查询第一页
-            p.setToPageNo(1);
-        }else{
-            //查询指定页
-            p.setToPageNo(pageNo);
-        }
-    }
 }

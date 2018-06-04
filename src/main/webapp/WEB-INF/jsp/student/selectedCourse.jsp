@@ -50,7 +50,6 @@
 					        <tbody>
 							<c:forEach  items="${selectedCourseList}" var="item">
 								<%--输出还没修完的课程--%>
-								<c:if test="${!item.over}">
 									<tr>
 										<td>${item.courseCustom.courseid}</td>
 										<td>${item.courseCustom.coursename}</td>
@@ -65,7 +64,6 @@
 											<!--弹出框-->
 										</td>
 									</tr>
-								</c:if>
 							</c:forEach>
 					        </tbody>
 				    </table>
@@ -117,7 +115,7 @@
 		</c:if>
 
         function outCourse(id) {
-            var msg = "您真的确定要删除吗？！";
+            var msg = "您真的确定要退掉这门课程吗吗？！";
             if (confirm(msg)==true){
                 location.href="outCourse?courseId="+id;
             }else{

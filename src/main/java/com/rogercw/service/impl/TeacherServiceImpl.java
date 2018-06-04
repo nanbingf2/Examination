@@ -64,10 +64,15 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public int findAllCount() {
+    public int findAllCount(Teacher teacher) {
         TeacherExample example = new TeacherExample();
         TeacherExample.Criteria criteria = example.createCriteria();
         criteria.andTeacheridIsNotNull();
+        if (teacher != null) {
+            if (teacher.getTeachername() != null&& !teacher.getTeachername().equals("")) {
+                criteria.andTeachernameEqualTo(teacher.getTeachername());
+            }
+        }
         return (int) teacherMapper.countByExample(example);
     }
 

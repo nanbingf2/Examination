@@ -12,7 +12,7 @@ public interface SelectCourseCustomMapper {
 
     public List<SelectCourseCustom> findSelectCourseByPage(Map<String, Object> params);
 
-    public Integer selectCount(int studentId);
+    /*public Integer selectCount(int studentId);*/
 
     public List<SelectCourseCustom> findGradeByCourseId(Map params);
 }

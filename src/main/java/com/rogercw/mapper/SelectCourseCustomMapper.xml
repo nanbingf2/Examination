@@ -14,23 +14,33 @@
         <result column="mark" property="mark"/>
     </resultMap>
 
-
+    <!--查询已选的课程-->
   <select id="findSelectCourseByPage" parameterType="java.util.Map" resultMap="selectCourseMap">
       SELECT course.*,selectcourse.mark
       FROM course,selectcourse
       WHERE course.courseid=selectcourse.courseid
-            <if test="studentId!=null">
-              AND selectcourse.studentid=#{studentId}
+      <if test="#{selectCourse != null}">
+            <if test="selectCourse.studentid!=null">
+              AND selectcourse.studentid=#{selectCourse.studentid}
             </if>
+            <choose>
+                <when test="selectCourse.mark==1">
+                    AND  selectcourse.mark IS NOT NULL
+                </when>
+                <when test="selectCourse.mark==0">
+                    AND selectcourse.mark IS NULL
+                </when>
+            </choose>
+      </if>
             LIMIT #{page.toPageNo} , #{page.pageSize}
   </select>
 
-    <select id="selectCount" parameterType="int" resultType="java.lang.Integer">
+    <!--<select id="selectCount" parameterType="int" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM course,selectcourse
         WHERE course.courseid=selectcourse.courseid
             AND selectcourse.studentid=#{studentId}
-    </select>
+    </select>-->
 
     <select id="findGradeByCourseId" parameterType="java.util.HashMap" resultType="com.rogercw.po.custom.SelectCourseCustom">
         SELECT student.studentid,student.studentname,selectcourse.mark

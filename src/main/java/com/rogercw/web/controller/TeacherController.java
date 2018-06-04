@@ -1,5 +1,7 @@
 package com.rogercw.web.controller;
 
+import com.rogercw.po.Course;
+import com.rogercw.po.SelectCourse;
 import com.rogercw.po.Student;
 import com.rogercw.po.User;
 import com.rogercw.po.custom.CourseCustom;
@@ -9,6 +11,7 @@ import com.rogercw.service.SelectCourseService;
 import com.rogercw.service.StudentService;
 import com.rogercw.util.CodingUtil;
 import com.rogercw.util.Page;
+import com.rogercw.util.SystemUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,31 +41,38 @@ public class TeacherController {
     @RequestMapping("/showCourse")
     public String showCourse(Integer page, Model model,
                              CourseCustom course, HttpSession session) throws UnsupportedEncodingException {
-        Page p=new Page();
-        this.setPageNo(page,p);
+        Page p=SystemUtils.setPageNum(page);
         //解决get方式乱码问题
         String coursename= CodingUtil.encode(course.getCoursename());
         course.setCoursename(coursename);
 
         //获取当前教师的编号
-        User user= (User) session.getAttribute("user");
+        int teacherId= Integer.parseInt(SystemUtils.getCurrentUserName());
         //设置过滤条件(教师编号)
-        course.setTeacherid(Integer.parseInt(user.getUsername()));
+        course.setTeacherid(teacherId);
         List<CourseCustom> courseList=courseService.findByPage(p,course);
-        int count=courseService.findAllCount();
+
+        int count=courseService.findAllCount(course);
         p.setTotalPage(count);
         //设置页面要显示的数据
         model.addAttribute("Page",p);
+        session.setAttribute("tCount",count);
         model.addAttribute("courseList",courseList);
         model.addAttribute("coursename",coursename);
         return "teacher/showCourse";
     }
 
-
+    /**
+     * 查看该课程的学生成绩
+     * @param page
+     * @param courseid
+     * @param model
+     * @param session
+     * @return
+     */
     @RequestMapping("/showGrade")
     public String showGrade(Integer page, Integer courseid, Model model,HttpSession session){
-        Page p=new Page();
-        this.setPageNo(page,p);
+        Page p=SystemUtils.setPageNum(page);
         if(courseid==null){
             return "teacher/showCourse";
         }
@@ -76,10 +86,13 @@ public class TeacherController {
             }
         }
 
-        int count=courseService.findAllCount();
+        SelectCourse selectCourse=new SelectCourse();
+        selectCourse.setCourseid(courseid);
+        int count=selectCourseService.selectCount(selectCourse);
         p.setTotalPage(count);
         //设置页面要显示的数据
         model.addAttribute("Page",p);
+        session.setAttribute("tCount",count);
         model.addAttribute("courseid",courseid);
         model.addAttribute("selectedCourseList",selectedCourseList);
         return "teacher/showGrade";
@@ -103,13 +116,9 @@ public class TeacherController {
     }
 
 
-    private void setPageNo(Integer pageNo,Page p){
-        if(pageNo==null||pageNo==0){
-            //查询第一页
-            p.setToPageNo(1);
-        }else{
-            //查询指定页
-            p.setToPageNo(pageNo);
-        }
+    @RequestMapping("/editPassword")
+    public String editPasswordUI(){
+        return "teacher/editPassword";
     }
+
 }

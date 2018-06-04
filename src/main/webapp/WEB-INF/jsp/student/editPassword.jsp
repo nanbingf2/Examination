@@ -26,7 +26,7 @@
 						</div>
 				    </div>
 				    <div class="panel-body">
-						<form name="reset" class="form-horizontal" role="form" action="editPassword" id="editfrom" method="post" onsubmit="return check()">
+						<form name="reset" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/editPassword" id="editfrom" method="post" onsubmit="return check()">
 							  <div class="form-group">
 							    <label for="inputEmail3" class="col-sm-2 control-label">旧密码</label>
 							    <div class="col-sm-10">

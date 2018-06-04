@@ -35,7 +35,7 @@ public interface CourseService {
      * 查询所有课程数量
      * @return
      */
-    public int findAllCount();
+    public int findAllCount(Course course);
 
     /**
      * 更新课程信息

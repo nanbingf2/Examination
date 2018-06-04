@@ -35,7 +35,7 @@ public interface StudentService {
      * 查询所有学生数量
      * @return
      */
-    public int findAllCount();
+    public int findAllCount(Student student);
 
     /**
      * 更新学生信息

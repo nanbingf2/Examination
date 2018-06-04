@@ -8,5 +8,6 @@
 </head>
 <body>
     <h1>${message}</h1>
+    <a href="${pageContext.request.contextPath}/loginUI">重新登录</a>
 </body>
 </html>

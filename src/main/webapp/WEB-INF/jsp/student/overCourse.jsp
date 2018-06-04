@@ -48,7 +48,6 @@
 					        <tbody>
 							<c:forEach  items="${selectedCourseList}" var="item">
 								<%--输出已修完的课程--%>
-								<c:if test="${item.over}">
 									<tr>
 										<td>${item.courseCustom.courseid}</td>
 										<td>${item.courseCustom.coursename}</td>
@@ -60,7 +59,6 @@
 										<td>${item.courseCustom.score}</td>
 										<td style="color: red">${item.mark}</td>
 									</tr>
-								</c:if>
 							</c:forEach>
 					        </tbody>
 				    </table>

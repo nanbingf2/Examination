@@ -2,8 +2,6 @@ package com.rogercw.web.controller;
 
 import com.rogercw.exception.CustomException;
 import com.rogercw.po.College;
-import com.rogercw.po.Student;
-import com.rogercw.po.Teacher;
 import com.rogercw.po.User;
 import com.rogercw.po.custom.CourseCustom;
 import com.rogercw.po.custom.StudentCustom;
@@ -11,6 +9,7 @@ import com.rogercw.po.custom.TeacherCustom;
 import com.rogercw.service.*;
 import com.rogercw.util.CodingUtil;
 import com.rogercw.util.Page;
+import com.rogercw.util.SystemUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -41,19 +39,24 @@ public class AdminController {
     private CourseService courseService;
 
     @RequestMapping("/showStudent")
-    public String showStudent(Integer page,Model model, StudentCustom student) throws UnsupportedEncodingException {
-        Page p=new Page();
-        this.setPageNo(page,p);
+    public String showStudent(Integer page,Model model,
+                              StudentCustom student,HttpSession session) throws UnsupportedEncodingException {
+        Page p= SystemUtils.setPageNum(page);
         //解决get方式乱码问题
         String studentname=CodingUtil.encode(student.getStudentname());
         student.setStudentname(studentname);
         List<StudentCustom> studentList=studentService.findByPage(p,student);
-        int count=studentService.findAllCount();
-        p.setTotalPage(count);
+        int studentCount=studentService.findAllCount(student);
+        p.setTotalPage(studentCount);
         //设置页面要显示的数据
         model.addAttribute("Page",p);
+        //查询出总数量,供页面显示
+        int teacherCount=teacherService.findAllCount(null);
+        int courseCount=courseService.findAllCount(null);
+        session.setAttribute("studentCount",studentCount);
+        session.setAttribute("teacherCount",teacherCount);
+        session.setAttribute("courseCount",courseCount);
         model.addAttribute("studentList",studentList);
-        System.out.println(studentname);
         model.addAttribute("studentname",studentname);
         return "admin/showStudent";
     }
@@ -138,17 +141,18 @@ public class AdminController {
     //*******************************教师管理************************************
 
     @RequestMapping("showTeacher")
-    public String showStudent(Integer page,Model model, TeacherCustom teacher) throws UnsupportedEncodingException {
-        Page p=new Page();
-        this.setPageNo(page,p);
+    public String showStudent(Integer page,Model model,
+                              TeacherCustom teacher,HttpSession session) throws UnsupportedEncodingException {
+        Page p=SystemUtils.setPageNum(page);
         //解决get方式乱码问题
         String teachername=CodingUtil.encode(teacher.getTeachername());
         teacher.setTeachername(teachername);
         List<TeacherCustom> teacherList=teacherService.findByPage(p,teacher);
-        int count=teacherService.findAllCount();
+        int count=teacherService.findAllCount(teacher);
         p.setTotalPage(count);
         //设置页面要显示的数据
         model.addAttribute("Page",p);
+        session.setAttribute("teacherCount",count);
         model.addAttribute("teacherList",teacherList);
         model.addAttribute("teachername",teachername);
         return "admin/showTeacher";
@@ -223,16 +227,17 @@ public class AdminController {
 
     //***************************课程管理*******************************
     @RequestMapping("showCourse")
-    public String showCourse(Integer page, Model model, CourseCustom course) throws UnsupportedEncodingException {
-        Page p=new Page();
-        this.setPageNo(page,p);
+    public String showCourse(Integer page, Model model,
+                             CourseCustom course,HttpSession session) throws UnsupportedEncodingException {
+        Page p= SystemUtils.setPageNum(page);
         //解决get方式乱码问题
         String coursename=CodingUtil.encode(course.getCoursename());
         course.setCoursename(coursename);
         List<CourseCustom> courseList=courseService.findByPage(p,course);
-        int count=courseService.findAllCount();
+        int count=courseService.findAllCount(course);
         p.setTotalPage(count);
         //设置页面要显示的数据
+        session.setAttribute("courseCount",count);
         model.addAttribute("Page",p);
         model.addAttribute("courseList",courseList);
         model.addAttribute("coursename",coursename);
@@ -308,26 +313,6 @@ public class AdminController {
         return "admin/editPassword";
     }
 
-    @RequestMapping(value = "/editPassword",method = RequestMethod.POST)
-    public String editPassword(String password, String password1,
-                                HttpSession session,Model model){
-        //从session中获取当前用户的密码
-        User user= (User) session.getAttribute("user");
-        String pwd=user.getPassword();
-        if(!password.equals(pwd)){
-            //输入的旧密码与当前用户的密码错误
-            String message="输入的密码错误";
-            model.addAttribute("message",message);
-            return "admin/editPassword";
-        }
-        //重新设置密码并更行当前用户
-        user.setPassword(password1);
-        userService.updateUser(user);
-        session.setAttribute("user",user);
-        return "admin/editPassword";
-    }
-
-
     @RequestMapping("/resetPassword")
     public String resetPassword(Integer id) throws Exception {
         User u=userService.findByUserName(id.toString());
@@ -340,14 +325,4 @@ public class AdminController {
         return "redirect:/admin/showStudent";
     }
 
-
-    private void setPageNo(Integer pageNo,Page p){
-        if(pageNo==null||pageNo==0){
-            //查询第一页
-            p.setToPageNo(1);
-        }else{
-            //查询指定页
-            p.setToPageNo(pageNo);
-        }
-    }
 }

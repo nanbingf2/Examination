@@ -16,9 +16,9 @@ public interface SelectCourseService {
 
     public void save(SelectCourse selectCourse);
 
-    public List<SelectCourseCustom> findSelectCourseByPage(int studentId, Page page);
+    public List<SelectCourseCustom> findSelectCourseByPage(SelectCourse selectCourse, Page page);
 
-    public int selectCount(int studentId);
+    public int selectCount(SelectCourse selectCourse);
 
     public void deleteSelectCourse(int studentId,int courseId);
 

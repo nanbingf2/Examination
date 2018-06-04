@@ -11,6 +11,7 @@
     <title>成功页面</title>
 </head>
 <body>
-    <h1>操作成功</h1>
+    <h1>修改密码成功</h1>
+    <a href="loginUI">点此重新登录</a>
 </body>
 </html>

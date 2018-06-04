@@ -36,7 +36,7 @@ public interface TeacherService {
      * 查询所有教师数量
      * @return
      */
-    public int findAllCount();
+    public int findAllCount(Teacher teacher);
 
     /**
      * 更新教师信息

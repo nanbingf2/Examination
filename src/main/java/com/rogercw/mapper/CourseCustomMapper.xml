@@ -16,6 +16,5 @@
                 </if>
             </if>
             LIMIT #{page.toPageNo} , #{page.pageSize}
-
   </select>
 </mapper>

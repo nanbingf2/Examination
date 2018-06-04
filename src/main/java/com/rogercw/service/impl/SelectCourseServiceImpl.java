@@ -45,17 +45,36 @@ public class SelectCourseServiceImpl implements SelectCourseService{
     }
 
     @Override
-    public List<SelectCourseCustom> findSelectCourseByPage(int studentId, Page page) {
+    public List<SelectCourseCustom> findSelectCourseByPage(SelectCourse selectCourse, Page page) {
         Map<String,Object> params=new HashMap<>();
-        params.put("studentId",studentId);
+        params.put("selectCourse",selectCourse);
         params.put("page",page);
         List<SelectCourseCustom> courseList = selectCourseCustomMapper.findSelectCourseByPage(params);
         return courseList;
     }
 
     @Override
-    public int selectCount(int studentId) {
-        return selectCourseCustomMapper.selectCount(studentId);
+    public int selectCount(SelectCourse selectCourse) {
+        SelectCourseExample example=new SelectCourseExample();
+        SelectCourseExample.Criteria criteria=example.createCriteria();
+        criteria.andStudentidIsNotNull();
+        if (selectCourse != null) {
+            if (selectCourse.getStudentid() != null && selectCourse.getStudentid()!=0) {
+                criteria.andStudentidEqualTo(selectCourse.getStudentid());
+            }
+            if(selectCourse.getMark()!=null && selectCourse.getMark()==0){
+                //正在学习的课程
+                criteria.andMarkIsNull();
+            }else if(selectCourse.getMark()!=null && selectCourse.getMark()==1){
+                //已修完的课程数量
+                criteria.andMarkIsNotNull();
+            }
+            if (selectCourse.getCourseid() != null && selectCourse.getCourseid()!=0) {
+                criteria.andCourseidEqualTo(selectCourse.getCourseid());
+            }
+
+        }
+        return (int) selectCourseMapper.countByExample(example);
     }
 
     @Override

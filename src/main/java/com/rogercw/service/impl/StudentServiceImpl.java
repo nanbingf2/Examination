@@ -64,10 +64,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public int findAllCount() {
+    public int findAllCount(Student student) {
         StudentExample example=new StudentExample();
         StudentExample.Criteria criteria=example.createCriteria();
         criteria.andStudentidIsNotNull();
+        if(student!=null){
+            if (student.getStudentname() != null && !student.getStudentname().equals("")) {
+                criteria.andStudentnameLike("%" + student.getStudentname() + "%");
+            }
+        }
         return (int) studentMapper.countByExample(example);
     }
 

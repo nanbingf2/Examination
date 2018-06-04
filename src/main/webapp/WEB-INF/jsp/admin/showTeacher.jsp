@@ -31,7 +31,7 @@
 					    	<h1 class="col-md-5">教师名单管理</h1>
 							<form class="bs-example bs-example-form col-md-5" role="form" style="margin: 20px 0 10px 0;" action="showTeacher" id="form1" method="post">
 								<div class="input-group">
-									<input type="text" class="form-control" placeholder="请输入姓名" name="teachername">
+									<input type="text" class="form-control" placeholder="请输入教师姓名" value="${teachername}" name="teachername">
 									<span class="input-group-addon btn" onclick="document.getElementById('form1').submit" id="sub">搜索</span>
 								</div>
 							</form>

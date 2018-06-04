@@ -45,7 +45,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteById(int id) {
         courseMapper.deleteByPrimaryKey(id);
-
     }
 
     @Override
@@ -62,10 +61,18 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public int findAllCount() {
+    public int findAllCount(Course course) {
         CourseExample example = new CourseExample();
         CourseExample.Criteria criteria = example.createCriteria();
         criteria.andCourseidIsNotNull();
+        if (course != null) {
+            if (course.getCoursename() != null && !course.getCoursename().equals("")) {
+                criteria.andCoursenameLike("%"+course.getCoursename()+"%");
+            }
+            if (course.getTeacherid() != null && course.getTeacherid()!=0) {
+                criteria.andTeacheridEqualTo(course.getTeacherid());
+            }
+        }
         return (int) courseMapper.countByExample(example);
     }
 

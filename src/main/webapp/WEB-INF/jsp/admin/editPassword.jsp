@@ -26,7 +26,7 @@
 						</div>
 				    </div>
 				    <div class="panel-body">
-						<form name="reset" class="form-horizontal" role="form" action="editPassword" id="editfrom" method="post" onsubmit="return check()">
+						<form name="reset" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/editPassword" id="editfrom" method="post" onsubmit="return check()">
 							  <div class="form-group">
 							    <label for="inputEmail3" class="col-sm-2 control-label">旧密码</label>
 							    <div class="col-sm-10">
@@ -64,7 +64,7 @@
 	</div>
 </body>
 <script>
-    $("#nav li:nth-child(5)").addClass("active")
+    $("#nav li:nth-child(4)").addClass("active")
     function check() {
         if(reset.password.value==""||reset.password.value==null)
         {alert("请输入旧账户密码");return false;}
