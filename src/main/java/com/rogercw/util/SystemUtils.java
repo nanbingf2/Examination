@@ -15,6 +15,7 @@ public class SystemUtils {
     public static String getCurrentUserName(){
         Subject subject= SecurityUtils.getSubject();
         String username= (String) subject.getPrincipal();
+        System.out.println(username);
         return username;
     }
 
